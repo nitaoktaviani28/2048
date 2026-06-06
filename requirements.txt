@@ -3,5 +3,3 @@ uvicorn[standard]
 numpy
 jinja2
 python-multipart
-easy-logs
-miskibin
