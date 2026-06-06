@@ -4,9 +4,8 @@ on:
   push:
     branches: [main]
 
-# Menggunakan ghcr.io sesuai standar di README
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/game-2048
+  IMAGE_NAME: haechanlovelove/game-2048
 
 jobs:
   # ── Job 1: Build & Push Docker Image ──────────────────────────
@@ -14,21 +13,16 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          # GITHUB_TOKEN otomatis digenerate oleh Actions, tidak perlu buat secret manual
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Extract metadata (tag)
         id: meta
@@ -43,7 +37,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # Dockerfile ada di root project, bukan di subfolder k8s/
           file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -59,7 +52,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Salin folder k8s/ ke server via SCP
       - name: Copy k8s manifests to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -69,7 +61,6 @@ jobs:
           source: "k8s/"
           target: "~/workshop-k3s"
 
-      # SSH ke server lalu jalankan kubectl secara lokal
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -78,18 +69,18 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           command_timeout: 5m
           script: |
-            # Menggunakan kubeconfig lokal milik user
             export KUBECONFIG=$HOME/.kube/config
 
             echo "==> Cek K3s service running..."
             sudo systemctl is-active k3s || (echo "K3s tidak running! Mencoba restart..." && sudo systemctl restart k3s && sleep 20)
 
+            echo "==> Update image di manifest..."
+            sed -i 's|image:.*|image: haechanlovelove/game-2048:latest|g' ~/workshop-k3s/k8s/manifest.yaml
+
             echo "==> Applying K8s manifests..."
-            # Terapkan konfigurasi Deployment dan Service dari folder k8s
             kubectl apply -f ~/workshop-k3s/k8s/manifest.yaml --validate=false
 
             echo "==> Force pull image terbaru..."
-            # Wajib dilakukan agar K3s menarik image 'latest' yang baru saja di-push dari Job 1
             kubectl rollout restart deployment/game-2048
 
             echo "==> Waiting for rollout..."
