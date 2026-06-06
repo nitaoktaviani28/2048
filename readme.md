@@ -79,7 +79,7 @@ ssh -i workshop.pem ubuntu@<EC2-PUBLIC-IP>
 ### STEP 2 — Clone Repo Workshop
 
 ```bash
-git clone https://github.com/Deri-Nugroho/Testing.git
+git clone https://github.com/Deri-Nugroho/2048.git
 cd Testing
 ls
 ```
