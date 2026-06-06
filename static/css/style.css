@@ -1,0 +1,122 @@
+:root {
+    --primary: #577590ff;
+    --tertiary: #f94144ff;
+    --secondary: #333;
+    --light: #eee;
+    --code: #f8961eff;
+}
+
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+    font-size: 1.5rem;
+    background-color: var(--secondary);
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 20%;
+    height: 80%;
+    /* background-color: var(--primary); */
+    border-radius: 10px;
+    color: #eee;
+    font-size: 1.5rem;
+    /* gap between lines */
+    line-height: 3rem;
+    /* box-shadow: 0 0 10px 0 rgba */
+    padding: 1rem;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    /* grid-gap: 5px; */
+    border: 3px;
+    width: 42rem;
+    height: 42rem;
+    margin: 0 auto;
+    background-color: #eee;
+    padding: 2px;
+    border-radius: 10px;
+    color: #eee;
+
+}
+
+.center {
+    font-size: 60px;
+    text-align: center;
+
+}
+
+.tile {
+    /* display */
+    display: flex;
+    /* justify content */
+    justify-content: center;
+    /* align items */
+    align-items: center;
+    /* font size */
+    font-size: 60px;
+    /* font weight */
+    font-weight: bold;
+    color: var(--secondary);
+    /* border */
+    border: 2px solid #eee;
+    /* border radius */
+    border-radius: 10px;
+    /* background */
+    background: var(--secondary);
+    /* cursor */
+    cursor: pointer;
+    /* hover-time */
+    transition: 0.1s ease-in-out;
+    /* not user select */
+    user-select: none;
+}
+
+.tile:hover {
+    /* background */
+    border-radius: 30px;
+}
+
+.tile:active {
+    /* background */
+    font-size: 100px;
+}
+
+.modal-content {
+    background-color: var(--secondary);
+    color: var(--light);
+
+}
+
+code {
+    color: var(--tertiary);
+}
+
+/* pre code */
+pre code {
+    color: var(--code);
+}
+
+.btn {
+    background-color: var(--primary);
+    color: var(--light);
+    border: none;
+    transition: 0.1s ease-in-out;
+}
+
+.btn:hover {
+    background-color: var(--tertiary);
+    color: var(--light);
+    border: none;
+}

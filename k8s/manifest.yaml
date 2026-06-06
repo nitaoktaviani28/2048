@@ -1,0 +1,89 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  Kubernetes Manifest – 2048 Game
+#  Contains: Deployment + Service (ClusterIP & NodePort)
+#  Image   : debuglifeindonesia/cohort-01:latest
+#  Port    : 8080
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ─────────────────────────────────────────────
+#  DEPLOYMENT
+# ─────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: game-2048
+  namespace: default
+  labels:
+    app: game-2048
+    version: "1.0.0"
+    managed-by: kubectl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: game-2048
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: game-2048
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: game-2048
+          image: debuglifeindonesia/cohort-01:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          env:
+            - name: APP_ENV
+              value: "production"
+
+---
+# ─────────────────────────────────────────────
+#  SERVICE
+# ─────────────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: game-2048-svc
+  namespace: default
+  labels:
+    app: game-2048
+spec:
+  type: NodePort
+  selector:
+    app: game-2048
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80          # ClusterIP port (internal)
+      targetPort: 8080  # Container port
+      nodePort: 30080   # External NodePort (range 30000-32767)
