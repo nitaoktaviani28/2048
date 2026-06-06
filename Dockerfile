@@ -29,6 +29,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application source
 COPY . .
 
+
 # Expose the application port
 EXPOSE 8080
 
