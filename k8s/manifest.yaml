@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: game-2048
-          image: debuglifeindonesia/cohort-01:latest
+          image: ghcr.io/deri-nugroho/game-2048:latest
           imagePullPolicy: Always
           ports:
             - name: http
