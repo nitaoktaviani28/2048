@@ -80,7 +80,7 @@ ssh -i workshop.pem ubuntu@<EC2-PUBLIC-IP>
 
 ```bash
 git clone https://github.com/Deri-Nugroho/2048.git
-cd Testing
+cd 2048
 ls
 ```
 
